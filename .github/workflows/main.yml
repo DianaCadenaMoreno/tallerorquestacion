@@ -29,7 +29,8 @@ jobs:
         node-version: 16
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
+      working-directory: mystore_frontend
 
     - name: Run tests
       run: npm test
