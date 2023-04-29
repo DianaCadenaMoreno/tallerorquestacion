@@ -30,9 +30,6 @@ jobs:
 
     - name: Install dependencies
       run: npm ci
-           sudo chown -R $USER:$USER node_modules/
-           sudo chmod -R 777 node_modules/
-      working-directory: mystore_frontend
 
     - name: Run tests
       run: npm test
