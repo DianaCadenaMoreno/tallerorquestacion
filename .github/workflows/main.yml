@@ -15,10 +15,10 @@ jobs:
 
     - name: Build Docker images
       run: |
-        docker build -t tallerorquestacion-mystore_frontend my-store/frontend
-        docker build -t tallerorquestacion-mystore_ms my-store/ms
-        docker build -t tallerorquestacion-bigstoredb big-store/db
-        docker build -t tallerorquestacion-adminer adminer
+        docker build -t tallerorquestacion-mystore_frontend tallerorquestacion/mystore_frontend
+        docker build -t tallerorquestacion-mystore_ms tallerorquestacion/mystore_frontend
+        docker build -t tallerorquestacion-bigstoredb tallerorquestacion/bigstore_ms
+        docker build -t tallerorquestacion-adminer tallerorquestacion/bigstore_ms
 
     - name: Start Docker containers
       run: docker-compose up -d
