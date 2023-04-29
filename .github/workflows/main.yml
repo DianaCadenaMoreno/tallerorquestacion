@@ -33,7 +33,7 @@ jobs:
       working-directory: mystore_frontend
 
     - name: Run tests
-      run: npm test
+      run: sudo npm test
 
     - name: Stop Docker containers
       run: docker-compose down
