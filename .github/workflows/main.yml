@@ -1,4 +1,4 @@
-name: Taller Orquestación
+name: Build and Test
 
 on:
   push:
@@ -6,48 +6,35 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
-    services:
-      mystore_frontend:
-        image: tallerorquestacion-mystore_frontend:latest
-        ports:
-          - "8085:80"
-      mystore_ms:
-        image: tallerorquestacion-mystore_ms:latest
-        ports:
-          - "4000:4000"
-      bigstoredb:
-        image: mysql:5.7
-        ports:
-          - "3306:3306"
-        env:
-          MYSQL_ROOT_PASSWORD: yourpassword
-          MYSQL_DATABASE: bigstore
-      adminer:
-        image: adminer:4.8.1
-        ports:
-          - "8080:8080"
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: |
-            tallerorquestacion-mystore_frontend:latest
-            tallerorquestacion-mystore_ms:latest
+    - name: Build Docker images
+      run: |
+        docker build -t tallerorquestacion-mystore_frontend my-store/frontend
+        docker build -t tallerorquestacion-mystore_ms my-store/ms
+        docker build -t tallerorquestacion-bigstoredb big-store/db
+        docker build -t tallerorquestacion-adminer adminer
 
-      - name: Deploy application
-        uses: appleboy/ssh-action@v1
-        with:
-          host: your_server_host
-          username: your_username
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            docker-compose down
-            docker-compose up -d
+    - name: Start Docker containers
+      run: docker-compose up -d
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test
+
+    - name: Stop Docker containers
+      run: docker-compose down
+
 
